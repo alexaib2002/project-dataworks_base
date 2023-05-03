@@ -7,8 +7,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
 import Link from '../components/Link';
-import {styled} from '@mui/material';
+import {Alert, AlertTitle, Snackbar, styled} from '@mui/material';
 
 const Root = styled('div')(({theme}) => {
     return {
@@ -19,39 +20,89 @@ const Root = styled('div')(({theme}) => {
 
 
 function Home() {
-    const [open, setOpen] = React.useState(false);
-    const handleClose = () => setOpen(false);
-    const handleClick = () => setOpen(true);
+    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+
+    const handleLogin = () => {
+        // TODO authenticate against DB
+        // FIXME some little warnings so users know this won't work yet
+        setDialogOpen(false);
+        setSnackbarOpen(true);
+
+    };
+    const handleClick = () => setDialogOpen(true);
+
+    function InfoSnackbar() {
+        return (
+            <Snackbar open={snackbarOpen} autoHideDuration={3000}
+                onClose={() => setSnackbarOpen(false)}>
+                    <Alert severity="warning"
+                        onClose={() => setSnackbarOpen(false)}>
+                            <AlertTitle>Warning</AlertTitle>
+                            DB authentication not implemented yet - sorry!
+                    </Alert>
+                </Snackbar>
+        );
+    }
+
+    function LoginDialog() {
+        return (
+            <Dialog open={dialogOpen} onClose={handleLogin}>
+                <DialogTitle>Login</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Please input your credentials in the form above.
+                        If you don't have an account, please contact an admin.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Email Address"
+                        type="email"
+                        fullWidth
+                        variant="standard"
+                    />
+                    <TextField
+                        margin="dense"
+                        id="password"
+                        label="Password"
+                        type="password"
+                        fullWidth
+                        autoComplete="current-password"
+                        variant="standard"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" onClick={handleLogin}>
+                        Login
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
 
     return (
         <React.Fragment>
             <Head>
-                <title>Home - Nextron (with-typescript-material-ui)</title>
+                <title>DataWorks</title>
             </Head>
             <Root>
-                <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Super Secret Password</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>1-2-3-4-5</DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button color="primary" onClick={handleClose}>
-                            OK
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                <LoginDialog />
+                <InfoSnackbar />
                 <Typography variant="h4" gutterBottom>
-                    Material-UI
+                    DataWorks
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                    with Nextron
+                    Making data management solutions that actually work!
                 </Typography>
                 <img src="/images/logo.png"/>
                 <Typography gutterBottom>
-                    <Link href="/next">Go to the next page</Link>
+                    <Link href="/next">About</Link>
                 </Typography>
-                <Button variant="contained" color="secondary" onClick={handleClick}>
-                    Super Secret Password
+                <Button variant="contained" color="secondary"
+                    onClick={handleClick}>
+                        Login
                 </Button>
             </Root>
         </React.Fragment>
