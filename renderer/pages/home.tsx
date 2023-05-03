@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Link from '../components/Link';
 import {Alert, AlertTitle, Snackbar, styled} from '@mui/material';
+import {shell} from 'electron'
 
 const Root = styled('div')(({theme}) => {
     return {
@@ -98,7 +99,9 @@ function Home() {
                 </Typography>
                 <img src="/images/logo.png"/>
                 <Typography gutterBottom>
-                    <Link href="/next">About</Link>
+                    <Link href="" onClick={() => {
+                        shell.openExternal("https://github.com/alexaib2002/dam2-final-project");
+                    }}>About</Link>
                 </Typography>
                 <Button variant="contained" color="secondary"
                     onClick={handleClick}>
