@@ -1,3 +1,10 @@
+# Electron/React/Next.js files
+node_modules
+*.log
+.next
+app
+dist
+
 # Compiled class file
 *.class
 
