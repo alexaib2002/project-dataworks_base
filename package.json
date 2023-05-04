@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "my-nextron-app",
-  "description": "My application description",
-  "version": "1.0.0",
-  "author": "Yoshihide Shiono <shiono.yoshihide@gmail.com>",
+  "name": "data-works",
+  "description": "Making easy data management solutions that actually work!",
+  "version": "0.1.0",
+  "author": "The Authors of DataWorks <https://github.com/alexaib2002/dam2-final-project>",
   "main": "app/background.js",
   "scripts": {
     "dev": "nextron",
