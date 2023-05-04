@@ -84,8 +84,9 @@ function Overview() {
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   function AdditionDialog() {
+    const closeDialog = () => setDialogOpen(false);
     return (
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+      <Dialog open={dialogOpen} onClose={closeDialog}>
         <DialogTitle>Add registry</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -111,7 +112,7 @@ function Overview() {
           /> */}
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={undefined}>
+          <Button color="primary" onClick={closeDialog}>
             Cancel
           </Button>
           <Button color="primary" onClick={undefined}>
