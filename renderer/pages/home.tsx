@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Link from '../components/Link';
 import {Alert, AlertTitle, Snackbar, styled} from '@mui/material';
-import {shell} from 'electron'
+import {shell} from 'electron';
 
 const Root = styled('div')(({theme}) => {
     return {
