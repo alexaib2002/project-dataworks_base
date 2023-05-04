@@ -51,7 +51,7 @@ function Home() {
 
     function LoginDialog() {
         return (
-            <Dialog open={dialogOpen}>
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
                 <DialogTitle>Login</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
