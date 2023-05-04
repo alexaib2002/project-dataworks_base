@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -23,9 +24,11 @@ const Root = styled('div')(({theme}) => {
 function Home() {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+    const router = useRouter();
 
     const handleLogin = () => {
         // TODO authenticate against DB
+        router.push('/overview');
         // FIXME some little warnings so users know this won't work yet
         setDialogOpen(false);
         setSnackbarOpen(true);
