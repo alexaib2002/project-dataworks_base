@@ -11,6 +11,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@mui/icons-material": "^5.11.16",
     "@mui/x-data-grid": "^6.3.0",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0"

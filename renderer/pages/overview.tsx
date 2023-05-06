@@ -1,10 +1,11 @@
-import { Box, Button, Grid, Typography, styled } from '@mui/material';
+import { Box, Button, Grid, IconButton, Typography, styled } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import Head from 'next/head';
 import * as React from 'react';
@@ -80,17 +81,23 @@ function DBDataGrid() {
     </Box>
   );
 }
+
 function Overview() {
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [addDialogOpen, setAddDialogOpen] = React.useState(false);
+  const [delDialogOpen, setDelDialogOpen] = React.useState(false);
 
   function AdditionDialog() {
-    const closeDialog = () => setDialogOpen(false);
+    const closeDialog = () => setAddDialogOpen(false);
     return (
-      <Dialog open={dialogOpen} onClose={closeDialog}>
-        <DialogTitle>Add registry</DialogTitle>
+      <Dialog open={addDialogOpen} onClose={closeDialog}>
+        <DialogTitle>Add new entry</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {/* User may want to have a customized prompt */}
+            {/*
+            User may want to have a customized prompt
+            Thus this dialog should be dinamic, allowing the fields to adapt
+            to their data type from the DB
+            */}
           </DialogContentText>
           <TextField
             autoFocus
@@ -123,6 +130,26 @@ function Overview() {
     );
   }
 
+  function DeletionDialog() {
+    const closeDialog = () => setDelDialogOpen(false);
+    return (
+      <Dialog open={delDialogOpen} onClose={closeDialog}>
+        <DialogTitle>Delete entries</DialogTitle>
+        <DialogContent>
+          Do you really want to delete the selected items?
+        </DialogContent>
+        <DialogActions>
+        <Button color="primary" onClick={closeDialog}>
+            Cancel
+          </Button>
+          <Button color="primary" onClick={undefined}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
   return (
     <React.Fragment>
       <Head>
@@ -131,15 +158,22 @@ function Overview() {
       <Root>
         <Typography variant="h4" gutterBottom>DataWorks</Typography>
         <AdditionDialog />
+        <DeletionDialog />
         <Grid container
           direction="row"
-          justifyContent="space-around"
+          justifyContent="center"
           alignItems="center"
           spacing={3}>
-          <Grid item xs={2}>
-            <Button variant="contained" color="primary"
-              onClick={() => setDialogOpen(true)}>
+          <Grid item xs={3}>
+            <Button variant="contained" color="primary" endIcon={<AddIcon />}
+              onClick={() => setAddDialogOpen(true)}>
               Add item
+            </Button>
+          </Grid>
+          <Grid item xs={3}>
+            <Button variant="contained" color="primary" endIcon={<DeleteIcon />}
+              onClick={() => setDelDialogOpen(true)}>
+              Delete selection
             </Button>
           </Grid>
           <Grid item xs={12}>
