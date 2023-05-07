@@ -2,12 +2,19 @@
 
 ## Usage
 
+After cloning or updating the project, install required dependencies
+
+### Install dependencies
+```
+$ npm install
+```
+
 ### Use it
 
 ```
 # development mode
-$ yarn dev (or `npm run dev` or `pnpm run dev`)
+$ npm run dev
 
 # production build
-$ yarn build (or `npm run build` or `pnpm run build`)
+$ npm run build
 ```
