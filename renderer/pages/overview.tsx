@@ -1,14 +1,15 @@
-import { Box, Button, Grid, IconButton, Typography, styled } from '@mui/material';
+import { AppBar, Box, Button, Grid, IconButton, Toolbar, Typography, styled } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Add as AddIcon, Menu as MenuIcon } from '@mui/icons-material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import Head from 'next/head';
 import * as React from 'react';
+import ResponsiveAppBar from '../components/ResponsiveAppBar';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -60,28 +61,6 @@ const Root = styled('div')(({ theme }) => {
     padding: theme.spacing(8),
   };
 });
-
-function DBDataGrid() {
-  return (
-    <Box sx={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
-            },
-          },
-        }}
-        pageSizeOptions={[5]}
-        checkboxSelection
-        disableRowSelectionOnClick
-      />
-    </Box>
-  );
-}
-
 function Overview() {
   const [addDialogOpen, setAddDialogOpen] = React.useState(false);
   const [delDialogOpen, setDelDialogOpen] = React.useState(false);
@@ -139,7 +118,7 @@ function Overview() {
           Do you really want to delete the selected items?
         </DialogContent>
         <DialogActions>
-        <Button color="primary" onClick={closeDialog}>
+          <Button color="primary" onClick={closeDialog}>
             Cancel
           </Button>
           <Button color="primary" onClick={undefined}>
@@ -150,36 +129,57 @@ function Overview() {
     );
   }
 
+  function DBTable() {
+    return (
+      <Grid container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={3}>
+        <Grid item>
+          <Button variant="contained" color="primary" endIcon={<AddIcon />}
+            onClick={() => setAddDialogOpen(true)}>
+            Add item
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" endIcon={<DeleteIcon />}
+            onClick={() => setDelDialogOpen(true)}>
+            Delete selection
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Box sx={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
+                },
+              }}
+              pageSizeOptions={[5]}
+              checkboxSelection
+              disableRowSelectionOnClick
+            />
+          </Box>
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
     <React.Fragment>
       <Head>
         <title>Overview</title>
       </Head>
+      <ResponsiveAppBar />
       <Root>
-        <Typography variant="h4" gutterBottom>DataWorks</Typography>
         <AdditionDialog />
         <DeletionDialog />
-        <Grid container
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          spacing={3}>
-          <Grid item xs={3}>
-            <Button variant="contained" color="primary" endIcon={<AddIcon />}
-              onClick={() => setAddDialogOpen(true)}>
-              Add item
-            </Button>
-          </Grid>
-          <Grid item xs={3}>
-            <Button variant="contained" color="primary" endIcon={<DeleteIcon />}
-              onClick={() => setDelDialogOpen(true)}>
-              Delete selection
-            </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <DBDataGrid />
-          </Grid>
-        </Grid>
+        <DBTable />
       </Root>
     </React.Fragment>
   );
