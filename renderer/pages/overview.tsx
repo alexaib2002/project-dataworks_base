@@ -64,6 +64,36 @@ const Root = styled('div')(({ theme }) => {
 function Overview() {
   const [addDialogOpen, setAddDialogOpen] = React.useState(false);
   const [delDialogOpen, setDelDialogOpen] = React.useState(false);
+  const [usrDialogOpen, setUsrDialogOpen] = React.useState(false);
+
+  function UserCreationDialog() {
+    const closeDialog = () => setUsrDialogOpen(false);
+    return (
+      <Dialog open={usrDialogOpen} onClose={closeDialog}>
+        <DialogTitle>Add a new database user</DialogTitle>
+        <DialogContent>
+        <TextField
+            autoFocus
+            margin="dense"
+            id="field"
+            label="Field"
+            type="text"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            margin="dense"
+            id="password"
+            label="Password"
+            type="password"
+            fullWidth
+            autoComplete="current-password"
+            variant="standard"
+          />
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   function AdditionDialog() {
     const closeDialog = () => setAddDialogOpen(false);
@@ -175,10 +205,11 @@ function Overview() {
       <Head>
         <title>Overview</title>
       </Head>
-      <ResponsiveAppBar />
+      <ResponsiveAppBar dbUserDialogCallback={() => {setUsrDialogOpen(true)}} />
       <Root>
         <AdditionDialog />
         <DeletionDialog />
+        <UserCreationDialog />
         <DBTable />
       </Root>
     </React.Fragment>
