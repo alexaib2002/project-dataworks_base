@@ -80,5 +80,8 @@ export default (windowName: string, options: BrowserWindowConstructorOptions): B
 
   win.on('close', saveState);
 
+  // Disable app menu
+  win.removeMenu();
+
   return win;
 };
