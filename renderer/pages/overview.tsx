@@ -91,6 +91,14 @@ function Overview() {
             variant="standard"
           />
         </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={closeDialog}>
+            Cancel
+          </Button>
+          <Button color="primary" onClick={undefined}>
+            Confirm
+          </Button>
+        </DialogActions>
       </Dialog>
     );
   }
