@@ -76,8 +76,8 @@ function Overview() {
             autoFocus
             margin="dense"
             id="field"
-            label="Field"
-            type="text"
+            label="Email"
+            type="email"
             fullWidth
             variant="standard"
           />
