@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -10,8 +9,9 @@ import DialogActions from '@mui/material/DialogActions';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Link from '../components/Link';
-import {Alert, AlertTitle, Snackbar, styled} from '@mui/material';
-import {shell} from 'electron';
+import { Alert, AlertTitle, Snackbar, styled } from '@mui/material';
+import { shell } from 'electron';
+import changePage from '../lib/page-transition';
 
 const Root = styled('div')(({theme}) => {
     return {
@@ -24,11 +24,10 @@ const Root = styled('div')(({theme}) => {
 function Home() {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-    const router = useRouter();
 
     const handleLogin = () => {
         // TODO authenticate against DB
-        router.push('/overview');
+        changePage('/overview');
         // FIXME some little warnings so users know this won't work yet
         setDialogOpen(false);
         setSnackbarOpen(true);
