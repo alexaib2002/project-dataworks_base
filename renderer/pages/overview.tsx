@@ -1,11 +1,11 @@
-import { AppBar, Box, Button, Grid, IconButton, Toolbar, Typography, styled } from '@mui/material';
+import { Box, Button, Grid, styled } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import { Delete as DeleteIcon, Add as AddIcon, Menu as MenuIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import Head from 'next/head';
 import * as React from 'react';
@@ -212,6 +212,10 @@ function Overview() {
     <React.Fragment>
       <Head>
         <title>Overview</title>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
       </Head>
       <ResponsiveAppBar dbUserDialogCallback={() => {setUsrDialogOpen(true)}} />
       <Root>

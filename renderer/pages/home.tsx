@@ -99,7 +99,7 @@ function Home() {
                 <Typography variant="subtitle1" gutterBottom>
                     Making data management solutions that actually work!
                 </Typography>
-                <img src="/images/logo.png"/>
+                <img src="/images/logo_simple.png"/>
                 <Typography gutterBottom>
                     <Link href="" onClick={() => {
                         shell.openExternal("https://github.com/alexaib2002/dam2-final-project");
