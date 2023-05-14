@@ -14,7 +14,9 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/x-data-grid": "^6.3.0",
     "electron-serve": "^1.1.0",
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "sqlite": "^4.2.0",
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "@emotion/cache": "^11.10.3",
