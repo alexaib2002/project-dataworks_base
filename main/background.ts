@@ -1,8 +1,13 @@
 import { app } from 'electron';
 import serve from 'electron-serve';
-import { createWindow } from './helpers';
+import { createWindow, dbManager } from './helpers';
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
+
+const closeApp = () => {
+  dbManager.closeDb();
+  app.quit();
+};
 
 if (isProd) {
   serve({ directory: 'app' });
@@ -27,6 +32,12 @@ if (isProd) {
   }
 })();
 
-app.on('window-all-closed', () => {
-  app.quit();
+app.whenReady().then(() => {
+  dbManager.initDb().then(() => {
+    console.log('Connected to DB');
+  }).catch((err) => {
+    console.log(err);
+  });
 });
+
+app.on('window-all-closed', closeApp);
