@@ -30,11 +30,11 @@ export const getCols = async (table: string) => {
 };
 
 export const insertFullRegistry = async (table: string, values: string[]) => {
-    let query = `INSERT INTO ${table}(${await getCols(table)}) VALUES (${
+    const query = `INSERT INTO ${table}(${await getCols(table)}) VALUES (${
         (() => {
-            let plholders: string = "";
-            values.forEach((_: string) => {plholders += "?,";})
-            return plholders.slice(0, -1);
+            let qvals: string = "";
+            values.forEach((_: string) => {qvals += "?,";})
+            return qvals.slice(0, -1);
         })()}`.concat(");");
     console.log(query);
     db.run(query, values);
