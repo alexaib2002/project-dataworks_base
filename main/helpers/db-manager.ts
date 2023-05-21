@@ -29,6 +29,12 @@ export const getCols = async (table: string) => {
     return cols.map((col) => col.name);
 };
 
+export const getRegistry = async (table: string, cols: string[], where: string) => {
+    const query = `SELECT ${cols.join(',')} FROM ${table} WHERE ${where};`;
+    console.log(query);
+    return await db.get(query);
+};
+
 export const insertFullRegistry = async (table: string, values: string[]) => {
     const query = `INSERT INTO ${table}(${await getCols(table)}) VALUES (${
         (() => {
@@ -36,6 +42,5 @@ export const insertFullRegistry = async (table: string, values: string[]) => {
             values.forEach((_: string) => {qvals += "?,";})
             return qvals.slice(0, -1);
         })()}`.concat(");");
-    console.log(query);
-    db.run(query, values);
+    return db.exec(query, values);
 };

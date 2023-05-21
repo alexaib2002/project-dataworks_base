@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, ipcMain } from 'electron';
 import serve from 'electron-serve';
 import { createWindow, dbManager } from './helpers';
 
@@ -38,6 +38,19 @@ app.whenReady().then(() => {
   }).catch((err) => {
     console.log(err);
   });
+});
+
+ipcMain.on('mesg-db-auth-user', (event, args) => {
+  dbManager.getRegistry('users', ['username', 'password'], `username LIKE '${args.username}'`)
+    .then((res) => {
+      if (!res) {
+        event.reply('reply-db-auth', false);
+        return;
+      }
+      event.reply('reply-db-auth', args.username === res.username && args.password === res.password);
+    }).catch((err) => {
+      console.log(err);
+    });
 });
 
 app.on('window-all-closed', closeApp);

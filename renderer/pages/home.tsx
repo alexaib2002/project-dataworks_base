@@ -10,10 +10,10 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Link from '../components/Link';
 import { Alert, AlertTitle, Snackbar, styled } from '@mui/material';
-import { shell } from 'electron';
+import { shell, ipcRenderer } from 'electron';
 import changePage from '../lib/page-transition';
 
-const Root = styled('div')(({theme}) => {
+const Root = styled('div')(({ theme }) => {
     return {
         textAlign: 'center',
         paddingTop: theme.spacing(4),
@@ -23,35 +23,41 @@ const Root = styled('div')(({theme}) => {
 
 function Home() {
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-
-    const handleLogin = () => {
-        // TODO authenticate against DB
-        changePage('/overview');
-        // FIXME some little warnings so users know this won't work yet
-        setDialogOpen(false);
-        setSnackbarOpen(true);
-
-    };
-    const handleClick = () => setDialogOpen(true);
-
-    function InfoSnackbar() {
-        return (
-            <Snackbar open={snackbarOpen} autoHideDuration={3000}
-                onClose={() => setSnackbarOpen(false)}>
-                    <Alert severity="warning"
-                        onClose={() => setSnackbarOpen(false)}>
-                            <AlertTitle>Warning</AlertTitle>
-                            DB authentication not implemented yet - sorry!
-                    </Alert>
-                </Snackbar>
-        );
-    }
 
     function LoginDialog() {
+        let [username, setUsername] = React.useState('none');
+        let [password, setPassword] = React.useState('none');
+        const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+
+        const handleLogin = () => {
+            ipcRenderer.send('mesg-db-auth-user',
+                { username: username, password: password });
+            ipcRenderer.once('reply-db-auth', (event, arg) => {
+                if (arg) {
+                    changePage('/overview');
+                } else {
+                    setSnackbarOpen(true);
+                }
+            });
+        };
+
+        function InfoSnackbar() {
+            return (
+                <Snackbar open={snackbarOpen} autoHideDuration={3000}
+                    onClose={() => setSnackbarOpen(false)}>
+                    <Alert severity="error"
+                        onClose={() => setSnackbarOpen(false)}>
+                        <AlertTitle>Invalid credentials</AlertTitle>
+                        Incorrect username or password. Please try again.
+                    </Alert>
+                </Snackbar>
+            );
+        }
+
         return (
             <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
                 <DialogTitle>Login</DialogTitle>
+                <InfoSnackbar />
                 <DialogContent>
                     <DialogContentText>
                         Please input your credentials in the form above.
@@ -60,11 +66,12 @@ function Home() {
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="name"
+                        id="username"
                         label="Email Address"
                         type="email"
                         fullWidth
                         variant="standard"
+                        onChange={(event) => setUsername(event.target.value)}
                     />
                     <TextField
                         margin="dense"
@@ -74,6 +81,7 @@ function Home() {
                         fullWidth
                         autoComplete="current-password"
                         variant="standard"
+                        onChange={(event) => setPassword(event.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -92,22 +100,21 @@ function Home() {
             </Head>
             <Root>
                 <LoginDialog />
-                <InfoSnackbar />
                 <Typography variant="h4" gutterBottom>
                     DataWorks
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
                     Making data management solutions that actually work!
                 </Typography>
-                <img src="/images/logo_simple.png"/>
+                <img src="/images/logo_simple.png" />
                 <Typography gutterBottom>
                     <Link href="" onClick={() => {
                         shell.openExternal("https://github.com/alexaib2002/dam2-final-project");
                     }}>About</Link>
                 </Typography>
                 <Button variant="contained" color="secondary"
-                    onClick={handleClick}>
-                        Login
+                    onClick={() => setDialogOpen(true)}>
+                    Login
                 </Button>
             </Root>
         </React.Fragment>
