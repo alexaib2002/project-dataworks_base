@@ -18,6 +18,20 @@ export const initDb = async () => {
         filename: DbQualifiedPath,
         driver: sqlite.Database
     });
+    initStruct();
+};
+
+export const initStruct =async () => {
+    db.exec(`CREATE TABLE IF NOT EXISTS "users" (
+        "uid"	INTEGER NOT NULL UNIQUE,
+        "username"	TEXT NOT NULL UNIQUE,
+        "password"	TEXT NOT NULL,
+        PRIMARY KEY("uid" AUTOINCREMENT)
+    )`).then(() => {
+        console.log('Created table users');
+    }).catch((err: any) => {
+        console.log(err);
+    });
 };
 
 export const closeDb = async () => {
