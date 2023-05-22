@@ -41,7 +41,7 @@ app.whenReady().then(() => {
 });
 
 ipcMain.on('mesg-db-auth-user', (event, args) => {
-  dbManager.getRegistry('users', ['username', 'password'], `username LIKE '${args.username}'`)
+  dbManager.getRegistry('users', ['username', 'password'], [{what: 'username', filter: args.username}])
     .then((res) => {
       if (!res) {
         event.reply('reply-db-auth', false);
