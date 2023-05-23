@@ -3,12 +3,30 @@
  * Supplies the necessary methods for storing and querying data
  */
 
-const DbPath = 'data.db';
-
 import { open } from 'sqlite';
-import sqlite, { Database } from 'sqlite3';
+import sqlite from 'sqlite3';
+import fs from 'fs';
+
+const DbPath = 'data.db';
+const DbDir = './db';
 
 let db: any;
+
+const initAppStruct = async () => {
+    console.log("About to create/upgrade app tables");
+    if (!fs.existsSync(DbDir)) fs.mkdirSync(DbDir);
+    for (const file of fs.readdirSync(DbDir)) {
+        console.log("About to execute SQL script", file);
+        if (!file.endsWith('.sql')) continue;
+        const sql = fs.readFileSync(`${DbDir}/${file}`, 'utf8');
+        await db.exec(sql).then(() => {
+            console.log(`Sucessfully executed SQL script ${file}`);
+        }).catch((err: any) => {
+            console.error(`Error while executing SQL script ${file}`);
+            console.error(err);
+        });
+    }
+};
 
 export const initDb = async () => {
     const { app } = require('electron');
@@ -18,17 +36,19 @@ export const initDb = async () => {
         filename: DbQualifiedPath,
         driver: sqlite.Database
     });
-    initStruct();
+    initSystemStruct();
+    initAppStruct();
 };
 
-export const initStruct = async () => {
+export const initSystemStruct = async () => {
+    console.log("About to create/upgrade system tables");
     db.exec(`CREATE TABLE IF NOT EXISTS "user" (
         "uid"	INTEGER NOT NULL UNIQUE,
         "username"	TEXT NOT NULL UNIQUE,
         "password"	TEXT NOT NULL,
         PRIMARY KEY("uid" AUTOINCREMENT)
     )`).then(() => {
-        console.log('Created table users');
+        console.log('Sucessfully created/updated system table users');
     }).catch((err: any) => {
         console.log(err);
     });
