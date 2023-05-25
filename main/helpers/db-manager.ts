@@ -22,7 +22,7 @@ export const initDb = async () => {
 };
 
 export const initStruct = async () => {
-    db.exec(`CREATE TABLE IF NOT EXISTS "users" (
+    db.exec(`CREATE TABLE IF NOT EXISTS "user" (
         "uid"	INTEGER NOT NULL UNIQUE,
         "username"	TEXT NOT NULL UNIQUE,
         "password"	TEXT NOT NULL,
