@@ -41,7 +41,7 @@ app.whenReady().then(() => {
 });
 
 ipcMain.on('mesg-db-auth-user', (event, args) => {
-  dbManager.getRegistry('users', ['username', 'password'], [{what: 'username', filter: args.username}])
+  dbManager.getRegistry('user', ['username', 'password'], [{what: 'username', filter: args.username}])
     .then((res) => {
       if (!res) {
         event.reply('reply-db-auth', false);
@@ -51,6 +51,14 @@ ipcMain.on('mesg-db-auth-user', (event, args) => {
     }).catch((err) => {
       console.log(err);
     });
+});
+
+ipcMain.on('mesg-db-get-tables', (event, _) => {
+  dbManager.getTables().then((res) => {
+    event.reply('reply-db-get-tables', res);
+  }).catch((err) => {
+    console.log(err);
+  });
 });
 
 app.on('window-all-closed', closeApp);

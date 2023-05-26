@@ -10,6 +10,8 @@ import fs from 'fs';
 const DbPath = 'data.db';
 const DbDir = './db';
 
+const protectedTables = ['user', 'sqlite_sequence'];
+
 let db: any;
 
 const initAppStruct = async () => {
@@ -58,24 +60,30 @@ export const closeDb = async () => {
     await db.close();
 };
 
+export const getTables = async () => {
+    const tables = await db.all(`SELECT name FROM sqlite_master WHERE type='table'`);
+    return tables.map((table: any) => table.name)
+        .filter((table: string) => !protectedTables.includes(table));
+};
+
 export const getCols = async (table: string) => {
     const cols = await db.all(`PRAGMA table_info(${table})`);
-    return cols.map((col) => col.name);
+    return cols.map((col: any) => col.name);
 };
 
 export const getRegistry = async (table: string, cols: string[], where: object[]) => {
     const query = `SELECT ${cols.join(',')} FROM ${table}${(() => {
-            let stmt: string = "";
-            if (where.length > 0) {
-                stmt += ' WHERE ';
-                where.forEach((w: any) => {
-                    stmt += `${w.what} LIKE ?`;
-                });
-            }
-            return stmt;
-        })()};`;
+        let stmt: string = "";
+        if (where.length > 0) {
+            stmt += ' WHERE ';
+            where.forEach((w: any) => {
+                stmt += `${w.what} LIKE ?`;
+            });
+        }
+        return stmt;
+    })()};`;
     console.log(query);
-    return await db.get(query, <string[]> where.map((w: any) => w.filter));
+    return await db.get(query, <string[]>where.map((w: any) => w.filter));
 };
 
 export const insertFullRegistry = async (table: string, values: string[]) => {

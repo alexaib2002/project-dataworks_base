@@ -1,4 +1,4 @@
-import { Box, Button, Grid, styled } from '@mui/material';
+import { Box, Button, Grid, styled, Tab, Tabs } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,6 +10,7 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import Head from 'next/head';
 import * as React from 'react';
 import ResponsiveAppBar from '../components/ResponsiveAppBar';
+import { ipcRenderer } from 'electron';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -58,13 +59,31 @@ const rows = [
 const Root = styled('div')(({ theme }) => {
   return {
     textAlign: 'center',
-    padding: theme.spacing(8),
+    padding: theme.spacing(2),
   };
 });
+
 function Overview() {
   const [addDialogOpen, setAddDialogOpen] = React.useState(false);
   const [delDialogOpen, setDelDialogOpen] = React.useState(false);
   const [usrDialogOpen, setUsrDialogOpen] = React.useState(false);
+  const [tabValue, setTabValue] = React.useState(0);
+  const [tabs, setTabs] = React.useState([]);
+
+  React.useEffect(() => {
+    const updateTabs = () => {
+      ipcRenderer.send('mesg-db-get-tables');
+      ipcRenderer.once('reply-db-get-tables', (_, arg) => {
+        setTabs(arg
+          .map((table: string) => <Tab label={table} key={table} />));
+      });
+    };
+    updateTabs();
+  }, []);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
 
   function UserCreationDialog() {
     const closeDialog = () => setUsrDialogOpen(false);
@@ -72,7 +91,7 @@ function Overview() {
       <Dialog open={usrDialogOpen} onClose={closeDialog}>
         <DialogTitle>Add a new database user</DialogTitle>
         <DialogContent>
-        <TextField
+          <TextField
             autoFocus
             margin="dense"
             id="field"
@@ -167,45 +186,72 @@ function Overview() {
     );
   }
 
-  function DBTable() {
+  function DBTable(props) {
+    const { tabId } = props;
     return (
-      <Grid container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        spacing={3}>
-        <Grid item>
-          <Button variant="contained" color="primary" endIcon={<AddIcon />}
-            onClick={() => setAddDialogOpen(true)}>
-            Add item
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary" endIcon={<DeleteIcon />}
-            onClick={() => setDelDialogOpen(true)}>
-            Delete selection
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <Box sx={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5,
+      <div
+        hidden={tabId !== tabValue}
+      >
+        <Grid container
+
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={3}>
+          <Grid item>
+            <Button variant="contained" color="primary" endIcon={<AddIcon />}
+              onClick={() => setAddDialogOpen(true)}>
+              Add item
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" endIcon={<DeleteIcon />}
+              onClick={() => setDelDialogOpen(true)}>
+              Delete selection
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Box sx={{ height: 400, width: '100%' }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
+                    },
                   },
-                },
-              }}
-              pageSizeOptions={[5]}
-              checkboxSelection
-              disableRowSelectionOnClick
-            />
-          </Box>
+                }}
+                pageSizeOptions={[5]}
+                checkboxSelection
+                disableRowSelectionOnClick
+              />
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     );
+  }
+
+  function TabContainer() {
+    return (
+      <Tabs
+        variant="scrollable"
+        scrollButtons="auto"
+        value={tabValue}
+        onChange={handleTabChange}
+      >
+        {tabs}
+      </Tabs>
+    );
+  }
+
+  function TabTableContainer() {
+    return (
+      <Box padding={3}>
+        {tabs.map((_, index) => <DBTable tabId={index} />)}
+      </Box>
+    )
   }
 
   return (
@@ -217,12 +263,13 @@ function Overview() {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </Head>
-      <ResponsiveAppBar dbUserDialogCallback={() => {setUsrDialogOpen(true)}} />
+      <ResponsiveAppBar dbUserDialogCallback={() => { setUsrDialogOpen(true) }} />
       <Root>
         <AdditionDialog />
         <DeletionDialog />
         <UserCreationDialog />
-        <DBTable />
+        <TabContainer />
+        <TabTableContainer />
       </Root>
     </React.Fragment>
   );
