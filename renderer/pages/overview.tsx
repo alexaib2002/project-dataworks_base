@@ -45,7 +45,6 @@ function Overview() {
     const updateTabFields = () => {
       ipcRenderer.send('mesg-db-get-fields', { table: tabs[tabValue] });
       ipcRenderer.once('reply-db-get-fields', (_, fields) => {
-        console.log(fields);
         setTabFields(fields);
       });
     };
@@ -57,7 +56,6 @@ function Overview() {
     const updateRows = () => {
       ipcRenderer.send('mesg-db-get-registries', { table: tabs[tabValue] });
       ipcRenderer.once('reply-db-get-registries', (_, dbRows) => {
-        console.log(dbRows);
         setRows(dbRows);
       });
     };
