@@ -67,19 +67,33 @@ function Overview() {
   const [addDialogOpen, setAddDialogOpen] = React.useState(false);
   const [delDialogOpen, setDelDialogOpen] = React.useState(false);
   const [usrDialogOpen, setUsrDialogOpen] = React.useState(false);
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tabValue, setTabValue] = React.useState(-1);
   const [tabs, setTabs] = React.useState([]);
+  const [tabFields, setTabFields] = React.useState([]);
 
+  // Requests the tables of the database. Updates once on page load.
   React.useEffect(() => {
     const updateTabs = () => {
       ipcRenderer.send('mesg-db-get-tables');
-      ipcRenderer.once('reply-db-get-tables', (_, arg) => {
-        setTabs(arg
-          .map((table: string) => <Tab label={table} key={table} />));
+      ipcRenderer.once('reply-db-get-tables', (_, dbTables) => {
+        setTabs(dbTables);
+        setTabValue(0); // update tab value so field update is triggered
       });
     };
     updateTabs();
   }, []);
+
+  // Requests the fields of the selected DB table. Updates every time tabValue changes.
+  React.useEffect(() => {
+    const updateTabFields = () => {
+      ipcRenderer.send('mesg-db-get-fields', { table: tabs[tabValue] });
+      ipcRenderer.once('reply-db-get-fields', (_, fields) => {
+        console.log(fields);
+        setTabFields(fields);
+      });
+    };
+    if (tabValue >= 0) updateTabFields();
+  }, [tabValue]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -122,6 +136,9 @@ function Overview() {
     );
   }
 
+  function DataDisplay(props: any) {
+    const { tabId } = props;
+
   function AdditionDialog() {
     const closeDialog = () => setAddDialogOpen(false);
     return (
@@ -130,9 +147,7 @@ function Overview() {
         <DialogContent>
           <DialogContentText>
             {/*
-            User may want to have a customized prompt
-            Thus this dialog should be dinamic, allowing the fields to adapt
-            to their data type from the DB
+              TODO Maybe there should be a table containing a description for each DB table.
             */}
           </DialogContentText>
           <TextField
@@ -144,15 +159,6 @@ function Overview() {
             fullWidth
             variant="standard"
           />
-          {/* <TextField
-            margin="dense"
-            id="password"
-            label="Password"
-            type="password"
-            fullWidth
-            autoComplete="current-password"
-            variant="standard"
-          /> */}
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={closeDialog}>
@@ -186,14 +192,13 @@ function Overview() {
     );
   }
 
-  function DBTable(props) {
-    const { tabId } = props;
     return (
       <div
         hidden={tabId !== tabValue}
       >
+        <AdditionDialog />
+        <DeletionDialog />
         <Grid container
-
           direction="row"
           justifyContent="center"
           alignItems="center"
@@ -233,7 +238,7 @@ function Overview() {
     );
   }
 
-  function TabContainer() {
+  function TabsSelector() {
     return (
       <Tabs
         variant="scrollable"
@@ -241,15 +246,15 @@ function Overview() {
         value={tabValue}
         onChange={handleTabChange}
       >
-        {tabs}
+        {tabs.map((table: string) => <Tab label={table} key={table} />)}
       </Tabs>
     );
   }
 
-  function TabTableContainer() {
+  function TabContent() {
     return (
       <Box padding={3}>
-        {tabs.map((_, index) => <DBTable tabId={index} />)}
+        {tabs.map((_, index) => <DataDisplay key={index} tabId={index} />)}
       </Box>
     )
   }
@@ -265,11 +270,9 @@ function Overview() {
       </Head>
       <ResponsiveAppBar dbUserDialogCallback={() => { setUsrDialogOpen(true) }} />
       <Root>
-        <AdditionDialog />
-        <DeletionDialog />
         <UserCreationDialog />
-        <TabContainer />
-        <TabTableContainer />
+        <TabsSelector />
+        <TabContent />
       </Root>
     </React.Fragment>
   );
