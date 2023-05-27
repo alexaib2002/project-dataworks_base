@@ -61,4 +61,12 @@ ipcMain.on('mesg-db-get-tables', (event, _) => {
   });
 });
 
+ipcMain.on('mesg-db-get-fields', (event, args) => {
+  dbManager.getCols(args.table).then((res) => {
+    event.reply('reply-db-get-fields', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
 app.on('window-all-closed', closeApp);
