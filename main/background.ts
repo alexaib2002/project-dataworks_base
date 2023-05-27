@@ -69,4 +69,14 @@ ipcMain.on('mesg-db-get-fields', (event, args) => {
   });
 });
 
+ipcMain.on('mesg-db-get-registries', (event, args) => {
+  // select all registries from table
+  dbManager.getRegistry(args.table, [], [], true).then((res) => {
+    console.log(args.table, res)
+    event.reply('reply-db-get-registries', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
 app.on('window-all-closed', closeApp);
