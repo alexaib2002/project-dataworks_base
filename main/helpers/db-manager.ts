@@ -71,19 +71,23 @@ export const getCols = async (table: string) => {
     return cols.map((col: any) => col.name);
 };
 
-export const getRegistry = async (table: string, cols: string[], where: object[]) => {
-    const query = `SELECT ${cols.join(',')} FROM ${table}${(() => {
-        let stmt: string = "";
-        if (where.length > 0) {
-            stmt += ' WHERE ';
-            where.forEach((w: any) => {
-                stmt += `${w.what} LIKE ?`;
-            });
-        }
-        return stmt;
-    })()};`;
+export const getRegistry = async (table: string, cols: string[] = [], where: object[] = [], all: boolean = false) => {
+    const query = `SELECT ${(
+        () => cols.length > 0 ? cols.join(',') : '*')()
+        } FROM ${table}${(() => {
+            let stmt: string = "";
+            if (where.length > 0) {
+                stmt += ' WHERE ';
+                where.forEach((w: any) => {
+                    stmt += `${w.what} LIKE ?`;
+                });
+            }
+            return stmt;
+        })()};`;
     console.log(query);
-    return await db.get(query, <string[]>where.map((w: any) => w.filter));
+    return all ?
+        await db.all(query, <string[]>where.map((w: any) => w.filter)) :
+        await db.get(query, <string[]>where.map((w: any) => w.filter));;
 };
 
 export const insertFullRegistry = async (table: string, values: string[]) => {
