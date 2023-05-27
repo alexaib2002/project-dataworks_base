@@ -84,7 +84,6 @@ export const getRegistry = async (table: string, cols: string[] = [], where: obj
             }
             return stmt;
         })()};`;
-    console.log(query);
     return all ?
         await db.all(query, <string[]>where.map((w: any) => w.filter)) :
         await db.get(query, <string[]>where.map((w: any) => w.filter));;
