@@ -53,6 +53,16 @@ ipcMain.on('mesg-db-auth-user', (event, args) => {
     });
 });
 
+ipcMain.on('mesg-db-create-user', (event, args) => {
+  dbManager.insertRegistry('user', ['username', 'password'], [args.email, args.password])
+    .then((_) => {
+      event.reply('reply-db-create-user', true);
+    }).catch((err) => {
+      console.log(err);
+      event.reply('reply-db-create-user', false);
+    });
+});
+
 ipcMain.on('mesg-db-get-tables', (event, _) => {
   dbManager.getTables().then((res) => {
     event.reply('reply-db-get-tables', res);

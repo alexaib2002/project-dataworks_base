@@ -68,6 +68,21 @@ function Overview() {
 
   function UserCreationDialog() {
     const closeDialog = () => setUsrDialogOpen(false);
+
+    const handleUserCreation = () => {
+      const email = document.getElementById('field') as HTMLInputElement;
+      const password = document.getElementById('password') as HTMLInputElement;
+      ipcRenderer.send('mesg-db-create-user', { email: email.value, password: password.value });
+      ipcRenderer.once('reply-db-create-user', (_, success) => {
+        console.log(success);
+        if (success) {
+          closeDialog();
+        } else {
+          // TODO Show error message
+        }
+      });
+    };
+
     return (
       <Dialog open={usrDialogOpen} onClose={closeDialog}>
         <DialogTitle>Add a new database user</DialogTitle>
@@ -95,7 +110,7 @@ function Overview() {
           <Button color="primary" onClick={closeDialog}>
             Cancel
           </Button>
-          <Button color="primary" onClick={undefined}>
+          <Button color="primary" onClick={handleUserCreation}>
             Confirm
           </Button>
         </DialogActions>
