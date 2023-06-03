@@ -6,7 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Head from 'next/head';
 import * as React from 'react';
 import ResponsiveAppBar from '../components/ResponsiveAppBar';
@@ -39,7 +39,7 @@ function Overview() {
     };
     updateTabs();
   }, []);
-  
+
   // Requests the fields of the selected DB table. Updates every time tabValue changes.
   React.useEffect(() => {
     const updateTabFields = () => {
@@ -137,19 +137,25 @@ function Overview() {
           <DialogTitle>Add new entry</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {/*
-              TODO Maybe there should be a table containing a description for each DB table.
-              */}
+              Fill the fields below to add a new entry to the database.
             </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="field"
-              label="Field"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
+            {tabFields.map((dbField: string) => {
+              if (dbField === 'id' || dbField === 'active') return;
+              // Capitalize first letter of field name
+              let label = dbField.slice(0, 1).toUpperCase() + dbField.slice(1);
+              return (
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id={dbField}
+                  key={dbField}
+                  label={label}
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                />
+              );
+            })}
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={closeDialog}>
@@ -162,7 +168,7 @@ function Overview() {
         </Dialog>
       );
     }
-  
+
     function DeletionDialog() {
       const closeDialog = () => setDelDialogOpen(false);
       return (
