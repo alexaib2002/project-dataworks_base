@@ -68,7 +68,7 @@ export const getTables = async () => {
 
 export const getCols = async (table: string) => {
     const cols = await db.all(`PRAGMA table_info(${table})`);
-    return cols.map((col: any) => col.name);
+    return cols;
 };
 
 export const getRegistry = async (table: string, cols: string[] = [], where: object[] = [], all: boolean = false) => {

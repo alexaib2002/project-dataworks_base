@@ -121,14 +121,15 @@ function Overview() {
   function DataDisplay(props: any) {
     const { tabId } = props;
 
-    const columns: GridColDef[] = tabFields.map((dbField: string) => {
-      return {
-        field: dbField,
-        headerName: dbField.toUpperCase(),
-        width: 150,
-        editable: true,
-      };
-    });
+    const columns: GridColDef[] = tabFields.map((col: any) => col.name)
+      .map((dbField: string) => {
+        return {
+          field: dbField,
+          headerName: dbField.toUpperCase(),
+          width: 150,
+          editable: true,
+        };
+      });
 
     function AdditionDialog() {
       const closeDialog = () => setAddDialogOpen(false);
@@ -139,23 +140,42 @@ function Overview() {
             <DialogContentText>
               Fill the fields below to add a new entry to the database.
             </DialogContentText>
-            {tabFields.map((dbField: string) => {
-              if (dbField === 'id' || dbField === 'active') return;
-              // Capitalize first letter of field name
-              let label = dbField.slice(0, 1).toUpperCase() + dbField.slice(1);
-              return (
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id={dbField}
-                  key={dbField}
-                  label={label}
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                />
-              );
-            })}
+            <Box
+              component="form"
+              autoComplete='off'
+            >
+              {tabFields.map((field: any) => {
+                const dbField: string = field.name;
+                const [error, setError] = React.useState(false);
+                const validateContent = (event) => {
+                  const value = event.target.value;
+                  if (!value && field.notnull === 1) {
+                    setError(true);
+                  } else {
+                    setError(false);
+                  }
+                };
+                if (field.pk || dbField === 'active') return;
+                // Capitalize first letter of field name
+                let label = dbField.slice(0, 1).toUpperCase() + dbField.slice(1);
+                return (
+                  <TextField
+                    required={field.notnull === 1}
+                    error={error}
+                    helperText={error ? 'This field cannot be empty' : ''}
+                    margin="dense"
+                    id={dbField}
+                    key={dbField}
+                    label={label}
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                    onChange={validateContent}
+                    onFocus={validateContent}
+                  />
+                );
+              })}
+            </Box>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={closeDialog}>
