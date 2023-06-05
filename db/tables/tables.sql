@@ -2,7 +2,7 @@
 -- SQL table creation script
 --------------------------------------------
 
-CREATE TABLE "customer" (
+CREATE TABLE IF NOT EXISTS "customer" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"name"	TEXT NOT NULL,
 	"surname"	TEXT,
@@ -11,7 +11,7 @@ CREATE TABLE "customer" (
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 
-CREATE TABLE "pet" (
+CREATE TABLE IF NOT EXISTS "pet" (
 	"id"	INTEGER NOT NULL UNIQUE,
     "cid"	INTEGER NOT NULL,
 	"name"	TEXT NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE "pet" (
     FOREIGN KEY("cid") REFERENCES "customer"("id")
 );
 
-CREATE TABLE "booking" (
+CREATE TABLE IF NOT EXISTS "booking" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"cid"	INTEGER NOT NULL,
 	"pid"	INTEGER NOT NULL,

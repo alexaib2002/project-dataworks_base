@@ -9,18 +9,19 @@ import fs from 'fs';
 
 const DbPath = 'data.db';
 const DbDir = './db';
+const DbData = DbDir.concat('/data');
+const DbTable = DbDir.concat('/tables');
 
 const protectedTables = ['user', 'sqlite_sequence'];
 
 let db: any;
+let dbFirstRun: boolean = false;
 
-const initAppStruct = async () => {
-    console.log("About to create/upgrade app tables");
-    if (!fs.existsSync(DbDir)) fs.mkdirSync(DbDir);
-    for (const file of fs.readdirSync(DbDir)) {
+const executeSQLDir = async (where: string) => {
+    for (const file of fs.readdirSync(where)) {
         console.log("About to execute SQL script", file);
         if (!file.endsWith('.sql')) continue;
-        const sql = fs.readFileSync(`${DbDir}/${file}`, 'utf8');
+        const sql = fs.readFileSync(`${where}/${file}`, 'utf8');
         await db.exec(sql).then(() => {
             console.log(`Sucessfully executed SQL script ${file}`);
         }).catch((err: any) => {
@@ -30,16 +31,35 @@ const initAppStruct = async () => {
     }
 };
 
+const initAppStruct = async () => {
+    console.log("About to create/upgrade app tables");
+    executeSQLDir(DbTable);
+};
+
+const initAppData = async () => {
+    console.log("About to create/upgrade app data");
+    if (dbFirstRun)
+        executeSQLDir(DbData);
+};
+
+const probeFirstRun = async (path: string) => {
+    if (!fs.existsSync(DbDir)) fs.mkdirSync(DbDir);
+    if (!fs.existsSync(DbTable)) fs.mkdirSync(DbTable);
+    if (!fs.existsSync(DbData)) fs.mkdirSync(DbData);
+    if (!fs.existsSync(path)) dbFirstRun = true;
+};
+
 export const initDb = async () => {
     const { app } = require('electron');
-    const path = require('path');
-    const DbQualifiedPath = path.join(app.getPath('userData'), DbPath);
+    const DbQualifiedPath = `${app.getPath('userData')}/${DbPath})`;
+    probeFirstRun(DbQualifiedPath);
     db = await open({
         filename: DbQualifiedPath,
         driver: sqlite.Database
     });
     initSystemStruct();
     initAppStruct();
+    initAppData();
 };
 
 export const initSystemStruct = async () => {
