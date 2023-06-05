@@ -167,7 +167,7 @@ function Overview() {
                     id={dbField}
                     key={dbField}
                     label={label}
-                    type="text"
+                    type={field.type === 'INTEGER' ? 'number' : 'text'}
                     fullWidth
                     variant="standard"
                     onChange={validateContent}
