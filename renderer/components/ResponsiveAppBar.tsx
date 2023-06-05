@@ -70,7 +70,7 @@ function ResponsiveAppBar({ dbUserDialogCallback }) {
     <AppBar position="sticky" sx={{ top: 0, bottom: 'auto' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <img src="/images/logo_extended.png" height={50} />
+          <img src="/images/logo_extended.svg" height={50} />
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
