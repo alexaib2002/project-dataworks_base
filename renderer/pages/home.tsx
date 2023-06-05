@@ -22,7 +22,16 @@ const Root = styled('div')(({ theme }) => {
 
 
 function Home() {
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [loginDialogOpen, setLoginDialogOpen] = React.useState(false);
+    const [initDialogOpen, setInitDialogOpen] = React.useState(false);
+
+    React.useEffect(() => {
+        ipcRenderer.send('mesg-db-get-registries', { table: 'user' });
+        ipcRenderer.once('reply-db-get-registries', (_, dbRows) => {
+            if (dbRows.length == 0)
+                setLoginDialogOpen(true);
+        });
+    }, []);
 
     function LoginDialog() {
         let [username, setUsername] = React.useState('none');
@@ -32,7 +41,7 @@ function Home() {
         const handleLogin = () => {
             ipcRenderer.send('mesg-db-auth-user',
                 { username: username, password: password });
-            ipcRenderer.once('reply-db-auth', (event, arg) => {
+            ipcRenderer.once('reply-db-auth', (_, arg) => {
                 if (arg) {
                     changePage('/overview');
                 } else {
@@ -55,7 +64,7 @@ function Home() {
         }
 
         return (
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+            <Dialog open={loginDialogOpen} onClose={() => setLoginDialogOpen(false)}>
                 <DialogTitle>Login</DialogTitle>
                 <InfoSnackbar />
                 <DialogContent>
@@ -93,6 +102,55 @@ function Home() {
         );
     }
 
+    function InitDialog(props: any) {
+        const handleInit = () => {
+            const email = document.getElementById('username') as HTMLInputElement;
+            const password = document.getElementById('password') as HTMLInputElement;
+            ipcRenderer.send('mesg-db-create-user', { email: email.value, password: password.value });
+            ipcRenderer.once('reply-db-create-user', (_, success) => {
+                if (success) {
+                    setInitDialogOpen(false);
+                } else {
+                    // TODO Show error message
+                }
+            });
+        };
+
+        return (
+            <Dialog open={initDialogOpen} onClose={() => setInitDialogOpen(false)}>
+                <DialogTitle>Setup DB</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Hi! Looks like this is your first time using DataWorks.
+                        Please enter the credentials for the admin user below.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="username"
+                        label="Email Address"
+                        type="email"
+                        fullWidth
+                        variant="standard"
+                    />
+                    <TextField
+                        margin="dense"
+                        id="password"
+                        label="Password"
+                        type="password"
+                        fullWidth
+                        variant="standard"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleInit}>
+                        Continue
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
+
     return (
         <React.Fragment>
             <Head>
@@ -100,6 +158,7 @@ function Home() {
             </Head>
             <Root>
                 <LoginDialog />
+                <InitDialog />
                 <Typography variant="h4" gutterBottom>
                     DataWorks
                 </Typography>
@@ -113,7 +172,7 @@ function Home() {
                     }}>About</Link>
                 </Typography>
                 <Button variant="contained" color="secondary"
-                    onClick={() => setDialogOpen(true)}>
+                    onClick={() => setLoginDialogOpen(true)}>
                     Login
                 </Button>
             </Root>

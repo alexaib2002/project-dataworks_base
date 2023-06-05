@@ -31,6 +31,20 @@ const executeSQLDir = async (where: string) => {
     }
 };
 
+const initSystemStruct = async () => {
+    console.log("About to create/upgrade system tables");
+    db.exec(`CREATE TABLE IF NOT EXISTS "user" (
+        "uid"	INTEGER NOT NULL UNIQUE,
+        "username"	TEXT NOT NULL UNIQUE,
+        "password"	TEXT NOT NULL,
+        PRIMARY KEY("uid" AUTOINCREMENT)
+    )`).then(() => {
+        console.log('Sucessfully created/updated system table users');
+    }).catch((err: any) => {
+        console.log(err);
+    });
+};
+
 const initAppStruct = async () => {
     console.log("About to create/upgrade app tables");
     executeSQLDir(DbTable);
@@ -51,7 +65,7 @@ const probeFirstRun = async (path: string) => {
 
 export const initDb = async () => {
     const { app } = require('electron');
-    const DbQualifiedPath = `${app.getPath('userData')}/${DbPath})`;
+    const DbQualifiedPath = `${app.getPath('userData')}/${DbPath}`;
     probeFirstRun(DbQualifiedPath);
     db = await open({
         filename: DbQualifiedPath,
@@ -60,20 +74,6 @@ export const initDb = async () => {
     initSystemStruct();
     initAppStruct();
     initAppData();
-};
-
-export const initSystemStruct = async () => {
-    console.log("About to create/upgrade system tables");
-    db.exec(`CREATE TABLE IF NOT EXISTS "user" (
-        "uid"	INTEGER NOT NULL UNIQUE,
-        "username"	TEXT NOT NULL UNIQUE,
-        "password"	TEXT NOT NULL,
-        PRIMARY KEY("uid" AUTOINCREMENT)
-    )`).then(() => {
-        console.log('Sucessfully created/updated system table users');
-    }).catch((err: any) => {
-        console.log(err);
-    });
 };
 
 export const closeDb = async () => {
