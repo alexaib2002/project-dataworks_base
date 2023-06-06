@@ -29,7 +29,7 @@ function Home() {
         ipcRenderer.send('mesg-db-get-registries', { table: 'user' });
         ipcRenderer.once('reply-db-get-registries', (_, dbRows) => {
             if (dbRows.length == 0)
-                setLoginDialogOpen(true);
+                setInitDialogOpen(true);
         });
     }, []);
 
@@ -102,7 +102,16 @@ function Home() {
         );
     }
 
-    function InitDialog(props: any) {
+    function InitDialog() {
+        const [cleared, setCleared] = React.useState(false);
+        const fields = ["Email", "Password"];
+        const validations = React.useMemo(() => {
+            return {
+                email: false,
+                password: false
+            }
+        }, []);
+
         const handleInit = () => {
             const email = document.getElementById('username') as HTMLInputElement;
             const password = document.getElementById('password') as HTMLInputElement;
@@ -117,33 +126,42 @@ function Home() {
         };
 
         return (
-            <Dialog open={initDialogOpen} onClose={() => setInitDialogOpen(false)}>
+            <Dialog open={initDialogOpen}>
                 <DialogTitle>Setup DB</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Hi! Looks like this is your first time using DataWorks.
                         Please enter the credentials for the admin user below.
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="username"
-                        label="Email Address"
-                        type="email"
-                        fullWidth
-                        variant="standard"
-                    />
-                    <TextField
-                        margin="dense"
-                        id="password"
-                        label="Password"
-                        type="password"
-                        fullWidth
-                        variant="standard"
-                    />
+                    {fields.map((id) => {
+                        const capId = id;
+                        id = id.toLowerCase();
+                        const [error, setError] = React.useState(false);
+                        const validateContent = (event) => {
+                            const value = event.target.value;
+                            const invalid = !value || value.length == 0;
+                            setError(invalid);
+                            validations[id] = !invalid;
+                            setCleared(validations.email && validations.password);
+                        };
+                        return (
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                error={error}
+                                id={id}
+                                label={capId}
+                                key={id}
+                                type={id == "password" ? "password" : "text"}
+                                fullWidth
+                                variant="standard"
+                                onChange={validateContent}
+                            />
+                        );
+                    })}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleInit}>
+                    <Button onClick={handleInit} disabled={!cleared}>
                         Continue
                     </Button>
                 </DialogActions>
