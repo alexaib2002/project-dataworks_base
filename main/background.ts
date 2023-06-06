@@ -88,4 +88,20 @@ ipcMain.on('mesg-db-get-registries', (event, args) => {
   });
 });
 
+ipcMain.on('mesg-db-disable-registries', (event, args) => {
+  args.ids.forEach(id => {
+    (async () => {
+      await dbManager
+        .updateRegistry(args.table, ['active'], ['0'],
+          [{ what: 'id', filter: id }]).then((_) => {
+            console.log(`Disabled ${id}`)
+          }).catch((err) => {
+            console.log(err);
+          });
+    })().then(() => {
+      event.reply('reply-db-disable-registries', true);
+    });
+  })
+});
+
 app.on('window-all-closed', closeApp);

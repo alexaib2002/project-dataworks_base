@@ -191,6 +191,19 @@ function Overview() {
 
     function DeletionDialog() {
       const closeDialog = () => setDelDialogOpen(false);
+
+      const handleDeletion = () => {
+        const selectedIds: number[] = rows.filter((row) => row.selected).map((row) => row.id);
+        ipcRenderer.send('mesg-db-disable-registries', { table: tabs[tabValue], ids: selectedIds });
+        ipcRenderer.once('reply-db-disable-registries', (_, success) => {
+          if (success) {
+            closeDialog();
+          } else {
+            // TODO Show error message
+          }
+        });
+      };
+
       return (
         <Dialog open={delDialogOpen} onClose={closeDialog}>
           <DialogTitle>Delete entries</DialogTitle>
@@ -201,7 +214,7 @@ function Overview() {
             <Button color="primary" onClick={closeDialog}>
               Cancel
             </Button>
-            <Button color="primary" onClick={undefined}>
+            <Button color="primary" onClick={handleDeletion}>
               Confirm
             </Button>
           </DialogActions>

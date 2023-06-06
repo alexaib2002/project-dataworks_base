@@ -1,5 +1,5 @@
 /**
- * Helper intended for DB management. 
+ * Helper intended for DB management.
  * Supplies the necessary methods for storing and querying data
  */
 
@@ -125,4 +125,21 @@ export const insertRegistry = async (table: string, cols: string[], values: stri
         return qvals.slice(0, -1);
     })()});`;
     return db.run(query, values);
+};
+
+export const updateRegistry = async (table: string, cols: string[], values: string[], where: object[]) => {
+    const query = `UPDATE ${table} SET ${(() => {
+        let stmt: string = "";
+        cols.forEach((col: string) => {
+            stmt += `${col} = ?,`;
+        });
+        return stmt.slice(0, -1);
+    })()} WHERE ${(() => {
+        let stmt: string = "";
+        where.forEach((w: any) => {
+            stmt += `${w.what} LIKE ?`;
+        });
+        return stmt;
+    })()};`;
+    return db.run(query, [...values, ...<string[]>where.map((w: any) => w.filter)]);
 };
