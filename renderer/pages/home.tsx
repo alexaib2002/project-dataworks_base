@@ -113,8 +113,8 @@ function Home() {
         }, []);
 
         const handleInit = () => {
-            const email = document.getElementById('username') as HTMLInputElement;
-            const password = document.getElementById('password') as HTMLInputElement;
+            const email = document.getElementById(fields[0].toLowerCase()) as HTMLInputElement;
+            const password = document.getElementById(fields[1].toLowerCase()) as HTMLInputElement;
             ipcRenderer.send('mesg-db-create-user', { email: email.value, password: password.value });
             ipcRenderer.once('reply-db-create-user', (_, success) => {
                 if (success) {
