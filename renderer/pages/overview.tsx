@@ -268,24 +268,28 @@ function Overview() {
     );
   }
 
-  function TabsSelector() {
-    return (
-      <Tabs
-        variant="scrollable"
-        scrollButtons="auto"
-        value={tabValue}
-        onChange={handleTabChange}
-      >
-        {tabs.map((table: string) => <Tab label={table} key={table} />)}
-      </Tabs>
-    );
-  }
+  function TabContainer() {
+    function TabsSelector() {
+      return (
+        <Tabs
+          variant="scrollable"
+          scrollButtons="auto"
+          value={tabValue}
+          onChange={handleTabChange}
+        >
+          {tabs.map((table: string) => <Tab label={table} key={table} />)}
+        </Tabs>
+      );
+    }
 
-  function TabContent() {
     return (
-      <Box padding={3}>
-        {tabs.map((_, index) => <DataDisplay key={index} tabId={index} />)}
+      <Box>
+        <TabsSelector />
+        <Box padding={3}>
+          {tabs.map((_, index) => <DataDisplay key={index} tabId={index} />)}
+        </Box>
       </Box>
+
     )
   }
 
@@ -301,8 +305,7 @@ function Overview() {
       <ResponsiveAppBar dbUserDialogCallback={() => { setUsrDialogOpen(true) }} />
       <Root>
         <UserCreationDialog />
-        <TabsSelector />
-        <TabContent />
+        <TabContainer />
       </Root>
     </React.Fragment>
   );
