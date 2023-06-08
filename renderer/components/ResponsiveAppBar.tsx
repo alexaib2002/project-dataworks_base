@@ -17,15 +17,21 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import changePage from '../lib/page-transition';
+import { ipcRenderer } from 'electron';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import TextField from '@mui/material/TextField';
+import DialogActions from '@mui/material/DialogActions';
 
 const appSettings = ['Create DB user'];
 const userSettings = ['Account', 'Logout'];
 
-function ResponsiveAppBar({ dbUserDialogCallback }) {
+function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [usrDialogOpen, setUsrDialogOpen] = React.useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -46,7 +52,7 @@ function ResponsiveAppBar({ dbUserDialogCallback }) {
     handleCloseNavMenu();
     switch (action) {
       case appSettings[0]: {
-        dbUserDialogCallback();
+        setUsrDialogOpen(true);
         break;
       }
     }
@@ -66,8 +72,61 @@ function ResponsiveAppBar({ dbUserDialogCallback }) {
     }
   }
 
+  function UserCreationDialog() {
+    const closeDialog = () => setUsrDialogOpen(false);
+
+    const handleUserCreation = () => {
+      const email = document.getElementById('field') as HTMLInputElement;
+      const password = document.getElementById('password') as HTMLInputElement;
+      ipcRenderer.send('mesg-db-create-user', { email: email.value, password: password.value });
+      ipcRenderer.once('reply-db-create-user', (_, success) => {
+        console.log(success);
+        if (success) {
+          closeDialog();
+        } else {
+          // TODO Show error message
+        }
+      });
+    };
+
+    return (
+      <Dialog open={usrDialogOpen} onClose={closeDialog}>
+        <DialogTitle>Add a new database user</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="field"
+            label="Email"
+            type="email"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            margin="dense"
+            id="password"
+            label="Password"
+            type="password"
+            fullWidth
+            autoComplete="current-password"
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={closeDialog}>
+            Cancel
+          </Button>
+          <Button color="primary" onClick={handleUserCreation}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
   return (
     <AppBar position="sticky" sx={{ top: 0, bottom: 'auto' }}>
+      <UserCreationDialog />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>

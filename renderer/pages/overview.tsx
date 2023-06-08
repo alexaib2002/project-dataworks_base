@@ -20,62 +20,6 @@ const Root = styled('div')(({ theme }) => {
 });
 
 function Overview() {
-  const [usrDialogOpen, setUsrDialogOpen] = React.useState(false);
-
-  console.log("rerendered")
-
-  function UserCreationDialog() {
-    const closeDialog = () => setUsrDialogOpen(false);
-
-    const handleUserCreation = () => {
-      const email = document.getElementById('field') as HTMLInputElement;
-      const password = document.getElementById('password') as HTMLInputElement;
-      ipcRenderer.send('mesg-db-create-user', { email: email.value, password: password.value });
-      ipcRenderer.once('reply-db-create-user', (_, success) => {
-        console.log(success);
-        if (success) {
-          closeDialog();
-        } else {
-          // TODO Show error message
-        }
-      });
-    };
-
-    return (
-      <Dialog open={usrDialogOpen} onClose={closeDialog}>
-        <DialogTitle>Add a new database user</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="field"
-            label="Email"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            margin="dense"
-            id="password"
-            label="Password"
-            type="password"
-            fullWidth
-            autoComplete="current-password"
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button color="primary" onClick={closeDialog}>
-            Cancel
-          </Button>
-          <Button color="primary" onClick={handleUserCreation}>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-
   function TabContainer() {
     const [tabValue, setTabValue] = React.useState(-1);
     const [tabs, setTabs] = React.useState([]);
@@ -316,9 +260,8 @@ function Overview() {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </Head>
-      <ResponsiveAppBar dbUserDialogCallback={() => { setUsrDialogOpen(true) }} />
+      <ResponsiveAppBar />
       <Root>
-        <UserCreationDialog />
         <TabContainer />
       </Root>
     </React.Fragment>
