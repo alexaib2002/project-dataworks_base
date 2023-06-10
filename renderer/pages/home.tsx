@@ -8,6 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Head from 'next/head';
+import InfoSnackbar from '../components/InfoSnackbar';
 import InitDialog from '../components/InitDialog';
 import Link from '../components/Link';
 import React from 'react';
@@ -43,23 +44,16 @@ function Home() {
             });
         };
 
-        function InfoSnackbar() {
-            return (
-                <Snackbar open={snackbarOpen} autoHideDuration={3000}
-                    onClose={() => setSnackbarOpen(false)}>
-                    <Alert severity="error"
-                        onClose={() => setSnackbarOpen(false)}>
-                        <AlertTitle>Invalid credentials</AlertTitle>
-                        Incorrect username or password. Please try again.
-                    </Alert>
-                </Snackbar>
-            );
-        }
-
         return (
             <Dialog open={loginDialogOpen} onClose={() => setLoginDialogOpen(false)}>
                 <DialogTitle>Login</DialogTitle>
-                <InfoSnackbar />
+                <InfoSnackbar
+                    openState={snackbarOpen}
+                    setOpenState={setSnackbarOpen}
+                    severity="error"
+                    title="Login Failed"
+                    message="Please check your credentials and try again."
+                />
                 <DialogContent>
                     <DialogContentText>
                         Please input your credentials in the form above.
