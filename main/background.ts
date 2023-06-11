@@ -97,6 +97,14 @@ ipcMain.on('mesg-db-get-registries', (event, args) => {
   });
 });
 
+ipcMain.on('mesg-db-get-fk-table', (event, args) => {
+  dbManager.getForeignKey(args.table, args.fk).then((res) => {
+    event.reply('reply-db-get-fk-table', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
 ipcMain.on('mesg-db-disable-registries', (event, args) => {
   args.ids.forEach(id => {
     (async () => {

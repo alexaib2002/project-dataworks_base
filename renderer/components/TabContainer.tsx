@@ -3,6 +3,7 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, D
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import React from "react";
+import RegistryPreview from './RegistryPreview';
 import { ipcRenderer } from "electron";
 
 function TabContainer() {
@@ -107,6 +108,38 @@ function TabContainer() {
                                     if (field.pk || dbField === 'active') return;
                                     // Capitalize first letter of field name
                                     let label = dbField.slice(0, 1).toUpperCase() + dbField.slice(1);
+                                    // TODO shouldn't check for id, but for foreign key in PRAGMA
+                                    if (dbField.endsWith('id')) {
+                                        const [fieldValue, setFieldValue] = React.useState('');
+                                        return (
+                                            <Box>
+                                                <TextField
+                                                    required={field.notnull === 1}
+                                                    error={error}
+                                                    helperText={error ? 'This field cannot be empty' : ''}
+                                                    margin="dense"
+                                                    id={dbField}
+                                                    key={dbField}
+                                                    label={label}
+                                                    value={fieldValue}
+                                                    type={field.type === 'INTEGER' ? 'number' : 'text'}
+                                                    fullWidth
+                                                    variant="standard"
+                                                    onChange={(event) => {
+                                                        setFieldValue(event.target.value);
+                                                        validateContent(event);
+                                                    }}
+                                                    onFocus={validateContent}
+                                                />
+                                                <RegistryPreview
+                                                    key={`preview_${dbField}`}
+                                                    fk={dbField}
+                                                    fkval={fieldValue}
+                                                    originTab={tabs[tabValue]}
+                                                />
+                                            </Box>
+                                        );
+                                    }
                                     return (
                                         <TextField
                                             required={field.notnull === 1}

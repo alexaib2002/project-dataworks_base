@@ -109,6 +109,12 @@ export const getRegistry = async (table: string, cols: string[] = [], where: obj
         await db.get(query, <string[]>where.map((w: any) => w.filter));;
 };
 
+export const getForeignKey = async (table: string, col: string) => {
+    const query = `PRAGMA foreign_key_list(${table})`;
+    const fks = await db.all(query);
+    return fks.filter((fk: any) => fk.from === col)[0];
+};
+
 export const insertFullRegistry = async (table: string, values: string[]) => {
     const query = `INSERT INTO ${table}(${await getCols(table)}) VALUES (${(() => {
         let qvals: string = "";
