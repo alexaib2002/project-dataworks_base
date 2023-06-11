@@ -81,7 +81,6 @@ function ResponsiveAppBar() {
       const password = document.getElementById('password') as HTMLInputElement;
       ipcRenderer.send('mesg-db-create-user', { email: email.value, password: password.value });
       ipcRenderer.once('reply-db-create-user', (_, success) => {
-        console.log(success);
         if (success) {
           closeDialog();
         } else {
