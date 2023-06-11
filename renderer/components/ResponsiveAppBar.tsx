@@ -5,25 +5,26 @@
  */
 
 import * as React from 'react';
+
 import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import changePage from '../lib/page-transition';
 import { ipcRenderer } from 'electron';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import TextField from '@mui/material/TextField';
-import DialogActions from '@mui/material/DialogActions';
 
 const appSettings = ['Create DB user'];
 const userSettings = ['Account', 'Logout'];
@@ -124,11 +125,22 @@ function ResponsiveAppBar() {
     );
   }
 
+  function AppLogo() {
+    return (
+      <Box sx={{
+        my: 1,
+      }}>
+        <img src="/images/logo_extended.svg" height={50} />
+      </Box>
+    );
+  }
+
   return (
     <AppBar position="sticky" sx={{ top: 0, bottom: 'auto' }}>
       <UserCreationDialog />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+          {/* Collapsed state items */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -140,6 +152,15 @@ function ResponsiveAppBar() {
             >
               <MenuIcon />
             </IconButton>
+            <Box sx={{
+              flexGrow: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <AppLogo />
+            </Box>
+            {/* Collapsed state hamburger menu */}
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -165,19 +186,23 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
+          {/* Extended state items */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <AppLogo />
             {appSettings.map((page) => (
               <Button
                 key={page}
                 onClick={() => parseNavActionMenu(page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{
+                  my: 2,
+                  mx: 1,
+                  color: 'white',
+                  display: 'block'
+                }}
               >
                 {page}
               </Button>
             ))}
-          </Box>
-          <Box sx={{ flexGrow: 1 }}>
-          <img src="/images/logo_extended.svg" height={50} />
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
