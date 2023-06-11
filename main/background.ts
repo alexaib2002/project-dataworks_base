@@ -1,6 +1,7 @@
 import { app, ipcMain } from 'electron';
-import serve from 'electron-serve';
 import { createWindow, dbManager } from './helpers';
+
+import serve from 'electron-serve';
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
 
@@ -74,6 +75,14 @@ ipcMain.on('mesg-db-get-tables', (event, _) => {
 ipcMain.on('mesg-db-get-fields', (event, args) => {
   dbManager.getCols(args.table).then((res) => {
     event.reply('reply-db-get-fields', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+ipcMain.on('mesg-db-get-registry', (event, args) => {
+  dbManager.getRegistry(args.table, [], args.where).then((res) => {
+    event.reply('reply-db-get-registry', res);
   }).catch((err) => {
     console.log(err);
   });
