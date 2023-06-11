@@ -130,7 +130,7 @@ function ResponsiveAppBar() {
       <Box sx={{
         my: 1,
       }}>
-        <img src="/images/logo_extended.svg" height={50} />
+        <img src="/images/logo_extended_alt.svg" height={50} />
       </Box>
     );
   }
