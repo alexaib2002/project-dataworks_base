@@ -19,7 +19,7 @@ import changePage from '../lib/page-transition';
 const Root = styled('div')(({ theme }) => {
     return {
         textAlign: 'center',
-        paddingTop: theme.spacing(4),
+        padding: theme.spacing(4),
     };
 })
 

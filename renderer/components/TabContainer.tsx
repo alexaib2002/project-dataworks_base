@@ -53,10 +53,10 @@ function TabContainer() {
     function TabsSelector() {
         return (
             <Tabs
-                variant="scrollable"
                 scrollButtons="auto"
                 value={tabValue}
                 onChange={handleTabChange}
+                centered
             >
                 {tabs.map((table: string) => <Tab label={table} key={table} />)}
             </Tabs>
@@ -172,7 +172,11 @@ function TabContainer() {
             }
 
             return (
-                <Box>
+                <Box
+                    sx={{
+                        padding: '10px',
+                    }}
+                >
                     <AdditionDialog />
                     <DeletionDialog />
                     <Grid sx={{ flexGrow: 1 }} container spacing={2}>
