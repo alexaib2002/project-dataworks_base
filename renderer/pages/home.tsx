@@ -103,7 +103,16 @@ function Home() {
                 <Typography variant="subtitle1" gutterBottom>
                     Making data management solutions that actually work!
                 </Typography>
-                <img src='/images/logo_simple.svg' />
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                    }}
+                >
+                    <img src='/images/logo_simple.svg' />
+                </Box>
                 {/* Align box to bottom of page */}
                 <Box
                     sx={{
