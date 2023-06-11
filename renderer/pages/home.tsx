@@ -1,6 +1,7 @@
 import { Alert, AlertTitle, Box, Snackbar, styled } from '@mui/material';
 import { ipcRenderer, shell } from 'electron';
 
+import AppStrings from '../lib/strings';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -46,7 +47,7 @@ function Home() {
 
         return (
             <Dialog open={loginDialogOpen} onClose={() => setLoginDialogOpen(false)}>
-                <DialogTitle>Login</DialogTitle>
+                <DialogTitle>{AppStrings.homeLogin}</DialogTitle>
                 <InfoSnackbar
                     openState={snackbarOpen}
                     setOpenState={setSnackbarOpen}
@@ -56,8 +57,7 @@ function Home() {
                 />
                 <DialogContent>
                     <DialogContentText>
-                        Please input your credentials in the form above.
-                        If you don't have an account, please contact an admin.
+                        {AppStrings.homeLoginDialogText}
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -82,7 +82,7 @@ function Home() {
                 </DialogContent>
                 <DialogActions>
                     <Button color="primary" onClick={handleLogin}>
-                        Login
+                        {AppStrings.homeLogin}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -92,16 +92,16 @@ function Home() {
     return (
         <React.Fragment>
             <Head>
-                <title>DataWorks</title>
+                <title>{AppStrings.appName}</title>
             </Head>
             <Root>
                 <LoginDialog />
                 <InitDialog />
                 <Typography variant="h4" gutterBottom>
-                    DataWorks
+                    {AppStrings.appName}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                    Making data management solutions that actually work!
+                    {AppStrings.appSubtitle}
                 </Typography>
                 <Box
                     sx={{
@@ -127,7 +127,7 @@ function Home() {
                     <Typography gutterBottom>
                         <Link href="" onClick={() => {
                             shell.openExternal("https://github.com/alexaib2002/dam2-final-project");
-                        }}>About</Link>
+                        }}>{AppStrings.homeAbout}</Link>
                     </Typography>
                     <Button
                         sx={{
@@ -135,7 +135,7 @@ function Home() {
                         }}
                         variant="contained"
                         onClick={() => setLoginDialogOpen(true)}>
-                        Login
+                        {AppStrings.homeLogin}
                     </Button>
                 </Box>
             </Root>

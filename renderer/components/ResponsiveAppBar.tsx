@@ -7,6 +7,7 @@
 import * as React from 'react';
 
 import AppBar from '@mui/material/AppBar';
+import AppStrings from '../lib/strings';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -66,7 +67,6 @@ function ResponsiveAppBar() {
         break;
       }
       case userSettings[1]: {
-        // TODO logout user
         changePage('/home');
         break;
       }
@@ -91,7 +91,7 @@ function ResponsiveAppBar() {
 
     return (
       <Dialog open={usrDialogOpen} onClose={closeDialog}>
-        <DialogTitle>Add a new database user</DialogTitle>
+        <DialogTitle>{AppStrings.systemAddUser}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -114,10 +114,10 @@ function ResponsiveAppBar() {
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={closeDialog}>
-            Cancel
+            {AppStrings.systemCancel}
           </Button>
           <Button color="primary" onClick={handleUserCreation}>
-            Confirm
+            {AppStrings.systemAdd}
           </Button>
         </DialogActions>
       </Dialog>

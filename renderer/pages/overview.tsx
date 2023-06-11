@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import AppStrings from '../lib/strings';
 import Head from 'next/head';
 import ResponsiveAppBar from '../components/ResponsiveAppBar';
 import TabContainer from '../components/TabContainer';
@@ -16,7 +17,7 @@ function Overview() {
   return (
     <React.Fragment>
       <Head>
-        <title>Overview</title>
+        <title>{AppStrings.overviewTitle}</title>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"

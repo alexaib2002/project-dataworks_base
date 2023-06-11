@@ -1,5 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 
+import AppStrings from "../lib/strings";
 import React from "react";
 import { ipcRenderer } from "electron";
 
@@ -38,11 +39,10 @@ function InitDialog() {
 
     return (
         <Dialog open={initDialogOpen}>
-            <DialogTitle>Setup DB</DialogTitle>
+            <DialogTitle>{AppStrings.setupDialogTitle}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Hi! Looks like this is your first time using DataWorks.
-                    Please enter the credentials for the admin user below.
+                    {AppStrings.setupDialogText}
                 </DialogContentText>
                 {fields.map((id) => {
                     const capId = id;
@@ -73,7 +73,7 @@ function InitDialog() {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleInit} disabled={!cleared}>
-                    Continue
+                    {AppStrings.systemContinue}
                 </Button>
             </DialogActions>
         </Dialog>

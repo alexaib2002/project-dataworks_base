@@ -2,6 +2,7 @@ import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Tab, Tabs, TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
+import AppStrings from '../lib/strings';
 import React from "react";
 import RegistryPreview from './RegistryPreview';
 import { ipcRenderer } from "electron";
@@ -85,10 +86,10 @@ function TabContainer() {
                 const closeDialog = () => setAddDialogOpen(false);
                 return (
                     <Dialog open={addDialogOpen} onClose={closeDialog}>
-                        <DialogTitle>Add new entry</DialogTitle>
+                        <DialogTitle>{AppStrings.dataAddRegistryTitle}</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Fill the fields below to add a new entry to the database.
+                                {AppStrings.dataAddRegistrySubtitle}
                             </DialogContentText>
                             <Box
                                 component="form"
@@ -161,10 +162,10 @@ function TabContainer() {
                         </DialogContent>
                         <DialogActions>
                             <Button color="primary" onClick={closeDialog}>
-                                Cancel
+                                {AppStrings.systemCancel}
                             </Button>
                             <Button color="primary" onClick={undefined}>
-                                Confirm
+                                {AppStrings.systemConfirm}
                             </Button>
                         </DialogActions>
                     </Dialog>
@@ -188,16 +189,16 @@ function TabContainer() {
 
                 return (
                     <Dialog open={delDialogOpen} onClose={closeDialog}>
-                        <DialogTitle>Delete entries</DialogTitle>
+                        <DialogTitle>{AppStrings.dataDeleteRegistryTitle}</DialogTitle>
                         <DialogContent>
-                            Do you really want to delete the selected items?
+                            {AppStrings.dataDeleteRegistrySubtitle}
                         </DialogContent>
                         <DialogActions>
                             <Button color="primary" onClick={closeDialog}>
-                                Cancel
+                                {AppStrings.systemCancel}
                             </Button>
                             <Button color="primary" onClick={handleDeletion}>
-                                Confirm
+                                {AppStrings.systemConfirm}
                             </Button>
                         </DialogActions>
                     </Dialog>
@@ -216,13 +217,13 @@ function TabContainer() {
                         <Grid item>
                             <Button variant="contained" color="primary" endIcon={<AddIcon />}
                                 onClick={() => setAddDialogOpen(true)}>
-                                Add item
+                                {AppStrings.systemAdd}
                             </Button>
                         </Grid>
                         <Grid item>
                             <Button variant="contained" color="primary" endIcon={<DeleteIcon />}
                                 onClick={() => setDelDialogOpen(true)}>
-                                Delete selection
+                                {AppStrings.systemDelete}
                             </Button>
                         </Grid>
                     </Grid>
