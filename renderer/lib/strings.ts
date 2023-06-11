@@ -6,6 +6,7 @@
 const AppStrings = {
     appName: "DataWorks",
     appSubtitle: "Making data management solutions that actually work!",
+    appUrl: "https://github.com/alexaib2002/dam2-final-project",
     homeAbout: "About",
     homeLogin: "Login",
     homeLoginDialogText: "Please input your credentials in the form above.\
@@ -24,6 +25,8 @@ const AppStrings = {
     setupDialogTitle: "Setup DB",
     setupDialogText: "Hi! Looks like this is your first time using DataWorks. \
     Please enter the credentials for the admin user below.",
+    errorLogin: "Login Failed",
+    errorLoginText: "Please check your credentials and try again.",
 }
 
 export default AppStrings;

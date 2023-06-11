@@ -52,8 +52,8 @@ function Home() {
                     openState={snackbarOpen}
                     setOpenState={setSnackbarOpen}
                     severity="error"
-                    title="Login Failed"
-                    message="Please check your credentials and try again."
+                    title={AppStrings.errorLogin}
+                    message={AppStrings.errorLoginText}
                 />
                 <DialogContent>
                     <DialogContentText>
@@ -126,7 +126,7 @@ function Home() {
                 >
                     <Typography gutterBottom>
                         <Link href="" onClick={() => {
-                            shell.openExternal("https://github.com/alexaib2002/dam2-final-project");
+                            shell.openExternal(AppStrings.appUrl);
                         }}>{AppStrings.homeAbout}</Link>
                     </Typography>
                     <Button
