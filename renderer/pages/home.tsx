@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Snackbar, styled } from '@mui/material';
+import { Alert, AlertTitle, Box, Snackbar, styled } from '@mui/material';
 import { ipcRenderer, shell } from 'electron';
 
 import Button from '@mui/material/Button';
@@ -104,15 +104,31 @@ function Home() {
                     Making data management solutions that actually work!
                 </Typography>
                 <img src='/images/logo_simple.svg' />
-                <Typography gutterBottom>
-                    <Link href="" onClick={() => {
-                        shell.openExternal("https://github.com/alexaib2002/dam2-final-project");
-                    }}>About</Link>
-                </Typography>
-                <Button variant="contained" color="secondary"
-                    onClick={() => setLoginDialogOpen(true)}>
-                    Login
-                </Button>
+                {/* Align box to bottom of page */}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        p: 2,
+                        m: 2,
+                    }}
+                >
+                    <Typography gutterBottom>
+                        <Link href="" onClick={() => {
+                            shell.openExternal("https://github.com/alexaib2002/dam2-final-project");
+                        }}>About</Link>
+                    </Typography>
+                    <Button
+                        sx={{
+                            width: '50%',
+                        }}
+                        variant="contained"
+                        onClick={() => setLoginDialogOpen(true)}>
+                        Login
+                    </Button>
+                </Box>
             </Root>
         </React.Fragment>
     );
