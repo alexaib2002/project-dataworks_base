@@ -1,6 +1,6 @@
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Tab, Tabs, TextField } from "@mui/material";
-import { DataGrid, GridColDef, GridValidRowModel, useGridApiRef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridFilterModel, GridValidRowModel, useGridApiRef } from "@mui/x-data-grid";
 
 import AppStrings from '../lib/strings';
 import React from "react";
@@ -69,6 +69,11 @@ function TabContainer() {
     function DataDisplay(props: any) {
         const { tabId } = props;
         const apiRef = useGridApiRef();
+        const [filterModel, setFilterModel] = React.useState<GridFilterModel>({
+            items: [
+                { field: 'active', operator: 'equals', value: '1' },
+            ],
+        });
 
         const columns: GridColDef[] = tabFields.map((col: any) => col.name)
             .map((dbField: string) => {
@@ -292,9 +297,10 @@ function TabContainer() {
                                         },
                                     },
                                 }}
-                                pageSizeOptions={[5]}
                                 checkboxSelection
                                 disableRowSelectionOnClick
+                                filterModel={filterModel}
+                                onFilterModelChange={(model) => setFilterModel(model)}
                             />
                         </Box>
                     </Grid>
