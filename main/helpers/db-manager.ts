@@ -187,12 +187,12 @@ export const getForeignKey = async (table: string, col: string) => {
  */
 
 export const insertFullRegistry = async (table: string, values: string[]) => {
-    const query = `INSERT INTO ${table}(${await getCols(table)}) VALUES (${(() => {
+    const query = `INSERT INTO ${table} VALUES (${(() => {
         let qvals: string = "";
         values.forEach((_: string) => { qvals += "?,"; })
         return qvals.slice(0, -1);
     })()});`;
-    return db.run(query, values);
+    return db.run(query, ...values);
 };
 
 /**
