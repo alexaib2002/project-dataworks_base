@@ -38,14 +38,15 @@ function TabContainer() {
 
     // Request the rows of the selected DB table. Updates every time tabValue changes.
     React.useEffect(() => {
-        const updateRows = () => {
-            ipcRenderer.send('mesg-db-get-registries', { table: tabs[tabValue] });
-            ipcRenderer.once('reply-db-get-registries', (_, dbRows) => {
-                setRows(dbRows);
-            });
-        };
         updateRows();
     }, [tabValue]);
+
+    const updateRows = () => {
+        ipcRenderer.send('mesg-db-get-registries', { table: tabs[tabValue] });
+        ipcRenderer.once('reply-db-get-registries', (_, dbRows) => {
+            setRows(dbRows);
+        });
+    };
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -101,6 +102,7 @@ function TabContainer() {
                     });
                     ipcRenderer.once('reply-db-insert-registry', (_, success) => {
                         if (success) {
+                            updateRows();
                             closeDialog();
                         }
                     });
