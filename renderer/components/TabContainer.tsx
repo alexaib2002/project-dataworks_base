@@ -77,6 +77,16 @@ function TabContainer() {
                     headerName: dbField.toUpperCase(),
                     width: 150,
                     editable: true,
+                    valueSetter: (params: GridValidRowModel) => {
+                        ipcRenderer.send('mesg-db-update-registry', {
+                            table: tabs[tabValue],
+                            field: [dbField],
+                            value: [params.value],
+                            where: [{ what: 'id', filter: params.row.id }],
+                        });
+                        params.row[dbField] = params.value;
+                        return params.row;
+                    },
                 };
             });
 

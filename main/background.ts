@@ -130,4 +130,8 @@ ipcMain.on('mesg-db-disable-registries', (event, args) => {
   })
 });
 
+ipcMain.on('mesg-db-update-registry', (event, {table, field, value, where}) => {
+  dbManager.updateRegistry(table, field, value, where);
+});
+
 app.on('window-all-closed', closeApp);
