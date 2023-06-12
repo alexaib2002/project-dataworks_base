@@ -105,13 +105,22 @@ ipcMain.on('mesg-db-get-fk-table', (event, args) => {
   });
 });
 
+ipcMain.on('mesg-db-insert-registry', (event, args) => {
+  dbManager.insertRegistry(args.table, args.fields, args.values).then((_) => {
+    event.reply('reply-db-insert-registry', true);
+  }).catch((err) => {
+    console.log(err);
+    event.reply('reply-db-insert-registry', false);
+  });
+});
+
 ipcMain.on('mesg-db-disable-registries', (event, args) => {
   args.ids.forEach(id => {
     (async () => {
       await dbManager
         .updateRegistry(args.table, ['active'], ['0'],
           [{ what: 'id', filter: id }]).then((_) => {
-            console.log(`Disabled ${id}`)
+            console.log(`Disabled ${id}`);
           }).catch((err) => {
             console.log(err);
           });

@@ -84,6 +84,28 @@ function TabContainer() {
 
             function AdditionDialog() {
                 const closeDialog = () => setAddDialogOpen(false);
+
+                const handleDataInsertion = () => {
+                    const insertValues = tabFields.map((field: any) => {
+                        const inputField = document.getElementById(field.name) as HTMLInputElement;
+                        if (inputField)
+                            return inputField.value;
+                        return undefined;
+                    }).filter((value: any) => value !== undefined);
+                    insertValues.push("1"); // Enable the registry by default
+                    ipcRenderer.send('mesg-db-insert-registry', {
+                        table: tabs[tabValue],
+                        fields: tabFields.map((field: any) => field.name)
+                            .filter((field: string) => field !== 'id'),
+                        values: insertValues,
+                    });
+                    ipcRenderer.once('reply-db-insert-registry', (_, success) => {
+                        if (success) {
+                            closeDialog();
+                        }
+                    });
+                };
+
                 return (
                     <Dialog open={addDialogOpen} onClose={closeDialog}>
                         <DialogTitle>{AppStrings.dataAddRegistryTitle}</DialogTitle>
@@ -164,7 +186,7 @@ function TabContainer() {
                             <Button color="primary" onClick={closeDialog}>
                                 {AppStrings.systemCancel}
                             </Button>
-                            <Button color="primary" onClick={undefined}>
+                            <Button color="primary" onClick={handleDataInsertion}>
                                 {AppStrings.systemConfirm}
                             </Button>
                         </DialogActions>
