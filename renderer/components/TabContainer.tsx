@@ -153,7 +153,7 @@ function TabContainer() {
                                     if (dbField.endsWith('id')) {
                                         const [fieldValue, setFieldValue] = React.useState('');
                                         return (
-                                            <Box>
+                                            <Box id={`${dbField}_boxcontainer`}>
                                                 <TextField
                                                     required={field.notnull === 1}
                                                     error={error}
@@ -293,10 +293,11 @@ function TabContainer() {
                                 initialState={{
                                     pagination: {
                                         paginationModel: {
-                                            pageSize: 5,
+                                            pageSize: 10,
                                         },
                                     },
                                 }}
+                                pageSizeOptions={[10]}
                                 checkboxSelection
                                 disableRowSelectionOnClick
                                 filterModel={filterModel}
