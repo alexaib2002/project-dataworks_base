@@ -1,6 +1,6 @@
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Tab, Tabs, TextField } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridValidRowModel, useGridApiRef } from "@mui/x-data-grid";
 
 import AppStrings from '../lib/strings';
 import React from "react";
@@ -68,6 +68,7 @@ function TabContainer() {
 
     function DataDisplay(props: any) {
         const { tabId } = props;
+        const apiRef = useGridApiRef();
 
         const columns: GridColDef[] = tabFields.map((col: any) => col.name)
             .map((dbField: string) => {
@@ -200,11 +201,14 @@ function TabContainer() {
                 const closeDialog = () => setDelDialogOpen(false);
 
                 const handleDeletion = () => {
-                    const selectedIds: number[] = rows.filter((row) => row.selected).map((row) => row.id);
+                    const selectedIds: number[] = [];
+                    apiRef.current.getSelectedRows()
+                        .forEach((row: GridValidRowModel) => selectedIds.push(row.id));
                     ipcRenderer.send('mesg-db-disable-registries', { table: tabs[tabValue], ids: selectedIds });
                     ipcRenderer.once('reply-db-disable-registries', (_, success) => {
                         if (success) {
                             closeDialog();
+                            updateRows();
                         } else {
                             // TODO Show error message
                         }
@@ -268,6 +272,7 @@ function TabContainer() {
                     <Grid item xs={12}>
                         <Box sx={{ height: '100%', width: '100%' }}>
                             <DataGrid
+                                apiRef={apiRef}
                                 rows={rows}
                                 columns={columns}
                                 initialState={{
