@@ -1,8 +1,9 @@
 import {
-  screen,
   BrowserWindow,
   BrowserWindowConstructorOptions,
+  screen,
 } from 'electron';
+
 import Store from 'electron-store';
 
 export default (windowName: string, options: BrowserWindowConstructorOptions): BrowserWindow => {
@@ -75,6 +76,8 @@ export default (windowName: string, options: BrowserWindowConstructorOptions): B
       contextIsolation: false,
       ...options.webPreferences,
     },
+    minWidth: 404,
+    minHeight: 628,
   };
   win = new BrowserWindow(browserOptions);
 

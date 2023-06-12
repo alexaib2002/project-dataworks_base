@@ -1,28 +1,32 @@
-import React from 'react';
-import Head from 'next/head';
+import { Alert, AlertTitle, Box, Snackbar, styled } from '@mui/material';
+import { ipcRenderer, shell } from 'electron';
+
+import AppStrings from '../lib/strings';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogActions from '@mui/material/DialogActions';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
+import DialogTitle from '@mui/material/DialogTitle';
+import Head from 'next/head';
+import InfoSnackbar from '../components/InfoSnackbar';
+import InitDialog from '../components/InitDialog';
 import Link from '../components/Link';
-import { Alert, AlertTitle, Snackbar, styled } from '@mui/material';
-import { shell, ipcRenderer } from 'electron';
+import React from 'react';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import changePage from '../lib/page-transition';
 
 const Root = styled('div')(({ theme }) => {
     return {
         textAlign: 'center',
-        paddingTop: theme.spacing(4),
+        padding: theme.spacing(4),
     };
 })
 
 
 function Home() {
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [loginDialogOpen, setLoginDialogOpen] = React.useState(false);
 
     function LoginDialog() {
         let [username, setUsername] = React.useState('none');
@@ -32,7 +36,7 @@ function Home() {
         const handleLogin = () => {
             ipcRenderer.send('mesg-db-auth-user',
                 { username: username, password: password });
-            ipcRenderer.once('reply-db-auth', (event, arg) => {
+            ipcRenderer.once('reply-db-auth', (_, arg) => {
                 if (arg) {
                     changePage('/overview');
                 } else {
@@ -41,27 +45,19 @@ function Home() {
             });
         };
 
-        function InfoSnackbar() {
-            return (
-                <Snackbar open={snackbarOpen} autoHideDuration={3000}
-                    onClose={() => setSnackbarOpen(false)}>
-                    <Alert severity="error"
-                        onClose={() => setSnackbarOpen(false)}>
-                        <AlertTitle>Invalid credentials</AlertTitle>
-                        Incorrect username or password. Please try again.
-                    </Alert>
-                </Snackbar>
-            );
-        }
-
         return (
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-                <DialogTitle>Login</DialogTitle>
-                <InfoSnackbar />
+            <Dialog open={loginDialogOpen} onClose={() => setLoginDialogOpen(false)}>
+                <DialogTitle>{AppStrings.homeLogin}</DialogTitle>
+                <InfoSnackbar
+                    openState={snackbarOpen}
+                    setOpenState={setSnackbarOpen}
+                    severity="error"
+                    title={AppStrings.errorLogin}
+                    message={AppStrings.errorLoginText}
+                />
                 <DialogContent>
                     <DialogContentText>
-                        Please input your credentials in the form above.
-                        If you don't have an account, please contact an admin.
+                        {AppStrings.homeLoginDialogText}
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -86,7 +82,7 @@ function Home() {
                 </DialogContent>
                 <DialogActions>
                     <Button color="primary" onClick={handleLogin}>
-                        Login
+                        {AppStrings.homeLogin}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -96,26 +92,52 @@ function Home() {
     return (
         <React.Fragment>
             <Head>
-                <title>DataWorks</title>
+                <title>{AppStrings.appName}</title>
             </Head>
             <Root>
                 <LoginDialog />
+                <InitDialog />
                 <Typography variant="h4" gutterBottom>
-                    DataWorks
+                    {AppStrings.appName}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                    Making data management solutions that actually work!
+                    {AppStrings.appSubtitle}
                 </Typography>
-                <img src="/images/logo_simple.png" />
-                <Typography gutterBottom>
-                    <Link href="" onClick={() => {
-                        shell.openExternal("https://github.com/alexaib2002/dam2-final-project");
-                    }}>About</Link>
-                </Typography>
-                <Button variant="contained" color="secondary"
-                    onClick={() => setDialogOpen(true)}>
-                    Login
-                </Button>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                    }}
+                >
+                    <img src='/images/logo_simple.svg' />
+                </Box>
+                {/* Align box to bottom of page */}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        p: 2,
+                        m: 2,
+                    }}
+                >
+                    <Typography gutterBottom>
+                        <Link href="" onClick={() => {
+                            shell.openExternal(AppStrings.appUrl);
+                        }}>{AppStrings.homeAbout}</Link>
+                    </Typography>
+                    <Button
+                        sx={{
+                            width: '50%',
+                        }}
+                        variant="contained"
+                        onClick={() => setLoginDialogOpen(true)}>
+                        {AppStrings.homeLogin}
+                    </Button>
+                </Box>
             </Root>
         </React.Fragment>
     );

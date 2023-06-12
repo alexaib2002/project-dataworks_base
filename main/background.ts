@@ -1,6 +1,7 @@
 import { app, ipcMain } from 'electron';
-import serve from 'electron-serve';
 import { createWindow, dbManager } from './helpers';
+
+import serve from 'electron-serve';
 
 const isProd: boolean = process.env.NODE_ENV === 'production';
 
@@ -41,7 +42,7 @@ app.whenReady().then(() => {
 });
 
 ipcMain.on('mesg-db-auth-user', (event, args) => {
-  dbManager.getRegistry('users', ['username', 'password'], [{what: 'username', filter: args.username}])
+  dbManager.getRegistry('user', ['username', 'password'], [{ what: 'username', filter: args.username }])
     .then((res) => {
       if (!res) {
         event.reply('reply-db-auth', false);
@@ -51,6 +52,86 @@ ipcMain.on('mesg-db-auth-user', (event, args) => {
     }).catch((err) => {
       console.log(err);
     });
+});
+
+ipcMain.on('mesg-db-create-user', (event, args) => {
+  dbManager.insertRegistry('user', ['username', 'password'], [args.email, args.password])
+    .then((_) => {
+      event.reply('reply-db-create-user', true);
+    }).catch((err) => {
+      console.log(err);
+      event.reply('reply-db-create-user', false);
+    });
+});
+
+ipcMain.on('mesg-db-get-tables', (event, _) => {
+  dbManager.getTables().then((res) => {
+    event.reply('reply-db-get-tables', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+ipcMain.on('mesg-db-get-fields', (event, args) => {
+  dbManager.getCols(args.table).then((res) => {
+    event.reply('reply-db-get-fields', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+ipcMain.on('mesg-db-get-registry', (event, args) => {
+  dbManager.getRegistry(args.table, [], args.where).then((res) => {
+    event.reply('reply-db-get-registry', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+ipcMain.on('mesg-db-get-registries', (event, args) => {
+  // select all registries from table
+  dbManager.getRegistry(args.table, [], [], true).then((res) => {
+    event.reply('reply-db-get-registries', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+ipcMain.on('mesg-db-get-fk-table', (event, args) => {
+  dbManager.getForeignKey(args.table, args.fk).then((res) => {
+    event.reply('reply-db-get-fk-table', res);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+ipcMain.on('mesg-db-insert-registry', (event, args) => {
+  dbManager.insertRegistry(args.table, args.fields, args.values).then((_) => {
+    event.reply('reply-db-insert-registry', true);
+  }).catch((err) => {
+    console.log(err);
+    event.reply('reply-db-insert-registry', false);
+  });
+});
+
+ipcMain.on('mesg-db-disable-registries', (event, args) => {
+  args.ids.forEach(id => {
+    (async () => {
+      await dbManager
+        .updateRegistry(args.table, ['active'], ['0'],
+          [{ what: 'id', filter: id }]).then((_) => {
+            console.log(`Disabled ${id}`);
+          }).catch((err) => {
+            console.log(err);
+          });
+    })().then(() => {
+      event.reply('reply-db-disable-registries', true);
+    });
+  })
+});
+
+ipcMain.on('mesg-db-update-registry', (event, {table, field, value, where}) => {
+  dbManager.updateRegistry(table, field, value, where);
 });
 
 app.on('window-all-closed', closeApp);
