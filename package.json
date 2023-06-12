@@ -2,7 +2,7 @@
   "private": true,
   "name": "data-works",
   "description": "Making easy data management solutions that actually work!",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "The Authors of DataWorks <https://github.com/alexaib2002/dam2-final-project>",
   "main": "app/background.js",
   "scripts": {
