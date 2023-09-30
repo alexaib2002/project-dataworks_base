@@ -1,5 +1,9 @@
 # DataWorks
 
+<div align="center">
+  <img src="https://github.com/alexaib2002/project-dataworks_base/assets/66980937/de0b581a-c3f7-4ddb-9b80-2a2672ae65e5" />
+</div>
+
 ## Stack
 
 - TypeScript
